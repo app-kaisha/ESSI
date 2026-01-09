@@ -7,14 +7,16 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ContentView: View {
+    
+    @Environment(\.modelContext) private var modelContext
+    @Query var snack: [Snack]
+    
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            Text("\(snack.count)")
         }
         .padding()
     }
@@ -22,4 +24,6 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
+        //.modelContainer(for: Snack.self, inMemory: true)
+        .modelContainer(Snack.preview)
 }
