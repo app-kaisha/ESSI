@@ -23,7 +23,7 @@ struct SnackDetailView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            TextField("", text: $name)
+            TextField("snack name", text: $name)
                 .font(.largeTitle)
                 .textFieldStyle(.roundedBorder)
             HStack {
@@ -31,11 +31,12 @@ struct SnackDetailView: View {
                     .bold()
                 Spacer()
                 Text("\(onHand)")
-                Stepper("") {
-                    onHand = onHand<Int.max ? onHand+1 : Int.max
-                } onDecrement: {
-                    onHand = onHand>0 ? onHand-1 : 0
-                }
+//                Stepper("") {
+//                    onHand = onHand<Int.max ? onHand+1 : Int.max
+//                } onDecrement: {
+//                    onHand = onHand>0 ? onHand-1 : 0
+//                }
+                Stepper("", value: $onHand, in: 0...Int.max)
                 .labelsHidden()
             }
             .font(.title2)
@@ -65,7 +66,7 @@ struct SnackDetailView: View {
                 }
             }
             ToolbarItem(placement: .confirmationAction) {
-                Button("Save", role: .destructive) {
+                Button("Save") {
                     snack.name = name
                     snack.onHand = onHand
                     snack.notes = notes
