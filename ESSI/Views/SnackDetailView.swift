@@ -11,13 +11,36 @@ import SwiftData
 
 struct SnackDetailView: View {
     
+    enum ComfortLevel: Int, CaseIterable {
+        case doesTheJob = 1
+        case solid = 2
+        case cravingSatisfyer = 3
+        case gourmet = 4
+        case emergencyComfort = 5
+        
+        var label: String {
+            switch self {
+            case .doesTheJob:
+                return "1 - ✅ Does the job"
+            case .solid:
+                return "2 - 👍 Solid"
+            case .cravingSatisfyer:
+                return "3 - 🤤 Craving Met"
+            case .gourmet:
+                return "4 - 👨‍🍳Gourment"
+            case .emergencyComfort:
+                return "5 - 🚨 Emergency"
+            }
+        }
+    }
+    
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     
     @State private var name = ""
     @State private var onHand = 0
     @State private var notes = ""
-    @State private var comfortLevel = 1
+    @State private var selectedComfortLevel = 1
     
     @State var snack: Snack
     
@@ -31,13 +54,23 @@ struct SnackDetailView: View {
                     .bold()
                 Spacer()
                 Text("\(onHand)")
-//                Stepper("") {
-//                    onHand = onHand<Int.max ? onHand+1 : Int.max
-//                } onDecrement: {
-//                    onHand = onHand>0 ? onHand-1 : 0
-//                }
                 Stepper("", value: $onHand, in: 0...Int.max)
                 .labelsHidden()
+            }
+            .font(.title2)
+            .padding(.bottom)
+            
+            HStack {
+                Text("Comfort:")
+                    .bold()
+                Spacer()
+                Picker("", selection: $selectedComfortLevel) {
+                    ForEach(ComfortLevel.allCases, id: \.self) { level in
+                        Text(level.label)
+                            .tag(level.rawValue)
+                    }
+                }
+                
             }
             .font(.title2)
             .padding(.bottom)
@@ -57,7 +90,7 @@ struct SnackDetailView: View {
             name = snack.name
             onHand = snack.onHand
             notes = snack.notes
-            comfortLevel = snack.comfortLevel
+            selectedComfortLevel = snack.comfortLevel
         }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -70,8 +103,7 @@ struct SnackDetailView: View {
                     snack.name = name
                     snack.onHand = onHand
                     snack.notes = notes
-                    snack.comfortLevel = comfortLevel
-                    
+                    snack.comfortLevel = selectedComfortLevel
                     modelContext.insert(snack)
                     
                     guard let _ = try? modelContext.save() else {
